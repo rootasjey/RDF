@@ -129,11 +129,16 @@ public class AddSource extends JDialog{
 	private String getJfc()
 	{
 
-		if(jfc==null){
+		if	(jfc	==	null){
 			jfc = new JFileChooser();
 			
-			FileFilter nt = new FiltreSimple("N-TRIPLE",".nt");
+			FileFilter nt 		= new FiltreSimple("N-TRIPLE",".nt");
+			FileFilter xml 	= new FiltreSimple("XML", ".xml");
+			FileFilter rdf 	= new FiltreSimple("RDF", ".rdf");
+			
 			jfc.addChoosableFileFilter(nt);
+			jfc.addChoosableFileFilter(xml);
+			jfc.addChoosableFileFilter(rdf);
 			jfc.setAcceptAllFileFilterUsed(false);
 
 
@@ -187,7 +192,17 @@ public class AddSource extends JDialog{
 			throw new IllegalArgumentException("File: "+inputFileName+" not found");
 		}
  
-		model.read(in,"","N-TRIPLE");
+		System.out.println(inputFileName);
+		if (inputFileName.endsWith(".nt")) {
+				model.read(in,"","N-TRIPLE");
+		}
+		else if (inputFileName.endsWith(".xml")) {
+				model.read(in,"","RDF/XML");
+		}
+		else if (inputFileName.endsWith(".rdf")) {
+				model.read(in,"","RDF/XML");
+		}
+		
 		///model.write(System.out);
         // list the statements in the graph
         StmtIterator iter = model.listStatements();
