@@ -136,7 +136,7 @@ public class AddSource extends JDialog{
 			FileFilter xml 	= new FiltreSimple("XML", ".xml");
 			FileFilter rdf 	= new FiltreSimple("RDF", ".rdf");
 			FileFilter ttl 	= new FiltreSimple("TURTLE", ".ttl");
-			FileFilter n3 	= new FiltreSimple("N3", ".n3");
+			FileFilter n3 	= new FiltreSimple("N3", ".txt");
 			
 			jfc.addChoosableFileFilter(nt);
 			jfc.addChoosableFileFilter(xml);

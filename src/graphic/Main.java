@@ -68,7 +68,7 @@ public class Main extends JFrame {
 			propos.addMouseListener(new MouseAdapter() {
 				
 				public void mouseClicked(MouseEvent e) {
-					//lance la fenetre a propos
+					//lance la fenêtre à propos
 					new Help();
 				}
 			});
