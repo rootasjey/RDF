@@ -135,10 +135,14 @@ public class AddSource extends JDialog{
 			FileFilter nt 		= new FiltreSimple("N-TRIPLE",".nt");
 			FileFilter xml 	= new FiltreSimple("XML", ".xml");
 			FileFilter rdf 	= new FiltreSimple("RDF", ".rdf");
+			FileFilter ttl 	= new FiltreSimple("TURTLE", ".ttl");
+			FileFilter n3 	= new FiltreSimple("N3", ".n3");
 			
 			jfc.addChoosableFileFilter(nt);
 			jfc.addChoosableFileFilter(xml);
 			jfc.addChoosableFileFilter(rdf);
+			jfc.addChoosableFileFilter(ttl);
+			jfc.addChoosableFileFilter(n3);
 			jfc.setAcceptAllFileFilterUsed(false);
 
 
@@ -194,16 +198,19 @@ public class AddSource extends JDialog{
  
 		System.out.println(inputFileName);
 		if (inputFileName.endsWith(".nt")) {
-				model.read(in,"","N-TRIPLE");
+				model.read(in, "", "N-TRIPLE");
 		}
-		else if (inputFileName.endsWith(".xml")) {
-				model.read(in,"","RDF/XML");
+		else if (inputFileName.endsWith(".xml") || inputFileName.endsWith(".rdf")) {
+				model.read(in, "", "RDF/XML");
 		}
-		else if (inputFileName.endsWith(".rdf")) {
-				model.read(in,"","RDF/XML");
+		else if (inputFileName.endsWith(".ttl")) {
+				model.read(in, "", "TURTLE");
 		}
+		else if (inputFileName.endsWith(".n3") || inputFileName.endsWith(".txt")) {
+			model.read(in, "", "N3");
+	}
 		
-		///model.write(System.out);
+		//model.write(System.out);
         // list the statements in the graph
         StmtIterator iter = model.listStatements();
         
