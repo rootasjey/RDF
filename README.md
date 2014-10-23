@@ -5,7 +5,7 @@ Java Project from Versailles University
 -------------------------------------------------
 
 #NEXT STEP
-* **6 novembre** : 
+* **6 novembre** : INDEXATION
 * Quel choix lié à l'index? 
 * Qu'est-ce qui sera indexé? 
 * L'indexation des littéraux est limitée :o
@@ -21,3 +21,19 @@ Java Project from Versailles University
 * Créer des spécialistes (Jena, Lucène,...)
 
 [Add Jena's Javadoc to Eclipse](http://www.iandickinson.me.uk/articles/jena-eclipse-helloworld/)
+
+
+###View (Interface Utilisateur)
+* AddSrc();
+* SelectRsrc();
+* ShowResult();
+
+###data.struct (Model)
+* Read();
+* BuildIndex();
+* BuildGraph();
+
+###Controller (Traitement de données)
+* ReadGraph(); - ShowGraph();
+* BuildSPARQL();
+* ExecQuery();
