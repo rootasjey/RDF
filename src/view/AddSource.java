@@ -21,6 +21,8 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
+import org.apache.lucene.queryparser.classic.ParseException;
+
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
@@ -106,14 +108,19 @@ public class AddSource extends JDialog {
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					getJfc();
+					try {
+						getJfc();
+					} catch (ParseException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}
 			});
 		}
 		return btnBrowse;
 	}
 	
-	private String getJfc() {
+	private String getJfc() throws ParseException {
 		if	(fileChooser	==	null){
 			fileChooser = new JFileChooser();
 			
