@@ -2,6 +2,7 @@
  * 	La calsse est imcompléte encore .... 
  *	En cours : La séparation entre l'indexation est la lecture du fichier RDF
  */
+
 package data.struct;
 
 import com.hp.hpl.jena.rdf.model.Model;

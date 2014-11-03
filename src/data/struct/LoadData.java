@@ -92,7 +92,7 @@ public class LoadData {
 			Directory dir = FSDirectory.open(INDEX_DIR);
 		
 			try {
-	       
+	        
 		        StandardAnalyzer analyzer = new StandardAnalyzer(Version.LUCENE_44);
 		        
 		        //Directory index = new RAMDirectory();

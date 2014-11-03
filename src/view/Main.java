@@ -247,6 +247,13 @@ public class Main extends JFrame {
 			bRecherche=new JButton("Recherche");
 		}
 		
+		ActionListener monActionListener = new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        System.out.println(recherche.getText());
+		    }
+		};
+		bRecherche.addActionListener(monActionListener);
+		
 		return bRecherche;
 	}
 	
