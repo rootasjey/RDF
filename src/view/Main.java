@@ -1,3 +1,4 @@
+
 package view;
 
 import java.awt.BorderLayout;
@@ -246,6 +247,13 @@ public class Main extends JFrame {
 		if(bRecherche==null){
 			bRecherche=new JButton("Recherche");
 		}
+		
+		ActionListener monActionListener = new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        System.out.println(recherche.getText());
+		    }
+		};
+		bRecherche.addActionListener(monActionListener);
 		
 		return bRecherche;
 	}

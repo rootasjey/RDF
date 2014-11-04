@@ -1,6 +1,7 @@
 package data.struct;
 
 import java.awt.Color;
+import java.io.File;
 import java.io.InputStream;
 
 import javax.swing.JTextPane;
@@ -18,9 +19,33 @@ import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.util.FileManager;
 
-public class LoadData {
+import java.io.IOException;
 
-	public void readRDFFile(JTextPane editeur,String path1){
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StringField;
+import org.apache.lucene.document.TextField;
+import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TopScoreDocCollector;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
+//import org.apache.lucene.store.RAMDirectory;
+import org.apache.lucene.util.Version;
+
+
+public class LoadData {
+	static final File DIR = new File("c:\\Temp");
+	
+	public void readRDFFile(JTextPane editeur,String path1) throws ParseException{
 		
 		Model model = ModelFactory.createDefaultModel();
 		String inputFileName =path1;
@@ -60,34 +85,107 @@ public class LoadData {
         StyleConstants.setForeground(style3, Color.BLUE);
         StyleConstants.setFontSize(style3, 22);
         
+       
+		/*	MY INDEXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX	 */
+		/***********************************************************/
+        try {
+			Directory dir = FSDirectory.open(DIR);// Cree un fichier indexé sur le disque dur
+		
+			try {
+	        
+		        StandardAnalyzer analyzer = new StandardAnalyzer(Version.LUCENE_44);
+		        
+		        //Directory index = new RAMDirectory();
+		        
+		        IndexWriterConfig myconfigur = new IndexWriterConfig(Version.LUCENE_44, analyzer);
+			
+				IndexWriter iwrit = new IndexWriter(dir, myconfigur);
+				
+				
+				 int j=0;
+			        // print out the predicate, subject and object of each statement
+			        while (iter.hasNext()) {
+			            Statement stmt      = iter.nextStatement();         // get next statement
+			            Resource  subject   = stmt.getSubject();   // get the subject
+			            Property  predicate = stmt.getPredicate(); // get the predicate
+			            RDFNode   object    = stmt.getObject();    // get the object
+			            j++;
+			            try{
+			            	//INDEXATION
+			            	addDoc(iwrit, predicate.toString(), subject.toString()); 
+			            	
+			            	 Doc.insertString(Doc.getLength(), j+"=>\n", style3);
+			            	 Doc.insertString(Doc.getLength(),subject.toString()+" ==> La Ressource \n", style2);
+			            	 Doc.insertString(Doc.getLength(), predicate.toString()+" ==> Propriete \n", style1);
+			            	 
+			            	 if (object instanceof Resource) {
+			            		 //addDoc(w, predicate.toString(), object.toString());
+			                     Doc.insertString(Doc.getLength(),object.toString()+" ==> Ressource de Ressource\n\n", defaut);
+			                 } else {
+			                     // object is a literal
+			                     Doc.insertString(Doc.getLength()," \"" + object.toString() + "\""+" ==> Le litérale\n\n", defaut);
+			                 }
+			            	
+			            }
+			            catch(BadLocationException e){
+			            	e.printStackTrace();
+			            	
+			            }
+			        }
+				iwrit.close();
+				/***********************************************************/
+				/*				Partie Recherche						   */
+				/***********************************************************/
+				// Text to search
+				String querystr = "nom";
+				
+				//	The \"title\" arg specifies the default field to use when no field is explicitly specified in the query
+				Query q = new QueryParser(Version.LUCENE_44, "propriete", analyzer).parse(querystr);
+				
+				// Searching code
+							int hitsPerPage = 2000;
+							//IndexReader ir=IndexReader.open(FSDirectory.open(new File(INDEX_DIR)));
+						    IndexReader reader = DirectoryReader.open(dir);
+						    IndexSearcher searcher = new IndexSearcher(reader);
+						    TopScoreDocCollector collector = TopScoreDocCollector.create(hitsPerPage, true);
+						    searcher.search(q, collector);
+						    ScoreDoc[] hits = collector.topDocs().scoreDocs;
+						    
+						    //	Code to display the results of search
+						    System.out.println("Found " + hits.length + " hits.");
+						    for(int i=0;i<hits.length;++i) 
+						    {
+						      int docId = hits[i].doc;
+						      Document d = searcher.doc(docId);
+						      System.out.println((i + 1) + ". " + d.get("propriete") + "\t" + d.get("valeur"));
+						    }
+						    
+						    // lire et acceder aux documents
+						    reader.close();
+				
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
         
-        int i=0;
-        // print out the predicate, subject and object of each statement
-        while (iter.hasNext()) {
-            Statement stmt      = iter.nextStatement();         // get next statement
-            Resource  subject   = stmt.getSubject();   // get the subject
-            Property  predicate = stmt.getPredicate(); // get the predicate
-            RDFNode   object    = stmt.getObject();    // get the object
-            i++;
-            try{
-            	
-            	Doc.insertString(Doc.getLength(), i+"=>\n", style3);
-            	 Doc.insertString(Doc.getLength(),subject.toString()+"\n", style2);
-            	 Doc.insertString(Doc.getLength(), predicate.toString()+"\n", style1);
-            	 
-            	 if (object instanceof Resource) {
-
-                     Doc.insertString(Doc.getLength(),object.toString()+"\n\n", defaut);
-                 } else {
-                     // object is a literal
-                     Doc.insertString(Doc.getLength()," \"" + object.toString() + "\""+"\n\n", defaut);
-                 }
-            	
-            }
-            catch(BadLocationException e){
-            	e.printStackTrace();
-            	
-            }
-        }
+        } catch (IOException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+        
+        
+        
+        
+       
+	}
+	//ajouter un document
+	private static void addDoc(IndexWriter w, String s1, String s2) throws IOException 
+	{
+		  Document doc = new Document();
+		  // A text field will be tokenized
+		  doc.add(new TextField("propriete", s1, Field.Store.YES));
+		  // We use a string field for isbn because we don\'t want it tokenized
+		  doc.add(new StringField("valeur", s2, Field.Store.YES));
+		  w.addDocument(doc);
 	}
 }
