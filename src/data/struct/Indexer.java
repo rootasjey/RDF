@@ -1,7 +1,3 @@
-/*
- * 	La calsse est imcompléte encore .... 
- *	En cours : La séparation entre l'indexation est la lecture du fichier RDF
- */
 
 package data.struct;
 
@@ -100,21 +96,26 @@ public class Indexer {
 		    // reader can only be closed when there is no need to access the documents any more
 		    reader.close();
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-	private static void addDoc(IndexWriter w, String title, String isbn) throws IOException 
+	private static void addDoc(IndexWriter w, String prop, String ress) throws IOException 
 	{
-		  Document doc = new Document();
-		  // A text field will be tokenized
-		  doc.add(new TextField("propriete", title, Field.Store.YES));
-		  // We use a string field for isbn because we don\'t want it tokenized
-		  doc.add(new StringField("valeur", isbn, Field.Store.YES));
-		  w.addDocument(doc);
+		/*	Document :
+		  	 Prop		Ress	
+		 	-------- |------------  
+		 	 XXX 	 |	YYY	
+		 	---------------------- */
+		
+		Document doc = new Document();
+		 
+		doc.add(new TextField("propriete", prop, Field.Store.YES));
+		
+		doc.add(new StringField("valeur", ress, Field.Store.YES));
+		  
+		w.addDocument(doc);
 	}
 }
