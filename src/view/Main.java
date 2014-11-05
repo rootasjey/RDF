@@ -9,11 +9,16 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -24,12 +29,30 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.text.Document;
+
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TopScoreDocCollector;
+import org.apache.lucene.store.FSDirectory;
+
+import com.fasterxml.jackson.core.Version;
+import com.hp.hpl.jena.query.Query;
+
+import data.struct.LoadData;
 
 
 @SuppressWarnings("serial")
 public class Main extends JFrame {
-	
+	private  String indexLocation = null;
 	private JMenuBar jJMenuBar = null;
 	private JMenu parametre = null;
 	private JMenu quitter = null;
@@ -43,6 +66,10 @@ public class Main extends JFrame {
 	private JTextField  recherche=null;
 	private JButton  bRecherche=null;
 	private JFrame fen=null;
+	private JButton search = null;
+	private JButton resultat = null;
+	private JButton tSearch = null;
+	private JButton thisClass = null;
 	//private JScrollPane jScrollPane = null;
 	
 	
@@ -226,7 +253,7 @@ public class Main extends JFrame {
 			panelNord2=new JPanel();
 
 			panelNord2.add(getRecherche());
-			panelNord2.add(getBRechercher());
+			panelNord2.add(getSearch());
 		}
 		return panelNord2;
 	}
@@ -242,7 +269,7 @@ public class Main extends JFrame {
 	}
 	
 	
-	private JButton getBRechercher(){
+	/*private JButton getBRechercher(){
 		
 		if(bRecherche==null){
 			bRecherche=new JButton("Recherche");
@@ -252,11 +279,100 @@ public class Main extends JFrame {
 		    public void actionPerformed(ActionEvent e) {
 		        System.out.println(recherche.getText());
 		    }
+		    
+		    
+		    
 		};
 		bRecherche.addActionListener(monActionListener);
 		
 		return bRecherche;
+	}*/
+	
+	public JTable search(JButton thisClass2, String mot)
+	  {
+		  
+
+		    //=========================================================
+		    // Now search
+		    //=========================================================
+		    IndexReader reader=null;
+			try {
+				reader = DirectoryReader.open(FSDirectory.open(new File(indexLocation)));
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		    IndexSearcher searcher = new IndexSearcher(reader);
+		    TopScoreDocCollector collector = TopScoreDocCollector.create(5, true);
+
+		    JTable table =null;
+
+		      try {
+		       
+		    	  StandardAnalyzer analyzer = new StandardAnalyzer();
+		        
+				@SuppressWarnings("deprecation")
+		        org.apache.lucene.search.Query q = new QueryParser( "contents", analyzer).parse(mot);
+		        searcher.search(q, collector);
+		        ScoreDoc[] hits = collector.topDocs().scoreDocs;
+		        // 4. display results
+		        System.out.println("resultats trouvé  " + hits.length + " hits.");
+		        
+		        
+		        if(hits.length==0)
+		        {
+		        	JOptionPane.showMessageDialog (null, " aucun resultat", "infos", JOptionPane.INFORMATION_MESSAGE);
+		        }
+		       
+		        
+		        String[] columnNames = {"numero","chemin"};
+		        
+		        Vector columnNamesV = new Vector(Arrays.asList(columnNames));
+		        
+		        Vector rowData = new Vector();
+		       
+
+		       
+		        for(int i=0;i<hits.length;++i) {
+		          int docId = hits[i].doc;
+		          org.apache.lucene.document.Document d = searcher.doc(docId);
+		          String[] val = {(i + 1)+"",d.get("path")};
+		          Vector colData = new Vector(Arrays.asList(val));
+		          rowData.add(colData);
+		          
+		          
+		          System.out.println((i + 1) + ". " + d.get("path") + " score=" + hits[i].score);
+		        }
+		        table = new JTable(rowData, columnNamesV);
+		        
+		      
+
+		      } catch (Exception e) {
+		        System.out.println("Erreur aucour de la recherche " + mot + " : " + e.getMessage());
+		      }
+		     
+
+		      return table;
+	  }
+	private JButton getSearch() {
+		if (search == null) {
+			search = new JButton();
+			search.setBounds(new Rectangle(230, 25, 170, 25));
+			search.setText("Rechercher");
+			search.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					JTable table=search(thisClass, tSearch.getText());
+					
+					resultat.removeAll();
+					resultat.add(new JScrollPane(table));
+					resultat.validate();
+				
+				}
+			});
+		}
+		return search;
 	}
+	
 	
 	
 	public Main(){

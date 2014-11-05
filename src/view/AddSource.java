@@ -38,12 +38,12 @@ import data.struct.LoadData;
 public class AddSource extends JDialog {
 
 	private JPanel mainPane				=	null;
-	private JPanel northPane				=	null;
+	private JPanel northPane			=	null;
 	private JPanel centralPanel			=	null;
-	private String path							=	null;
+	private String path					=	null;
 	private JButton btnBrowse			=	null;
 	private JTextPane jTextPane 		=	null;
-	private JScrollPane jScrollPane1 = null;
+	private JScrollPane jScrollPane1    = null;
 	private JFileChooser fileChooser	=	null;
 	private JTextField textFieldLink	=	null;
 
