@@ -35,23 +35,22 @@ import java.io.File;
 import java.io.IOException;
 
 public class Indexer {
-	static final File INDEX_DIR = new File("c:\\Temp\\index_test");
-	Directory dir;// = FSDirectory.open(INDEX_DIR);
+	static final File INDEX_DIR = new File("c:\\Temp\\index_test2");
+	Directory dir;
 	
-	StandardAnalyzer analyzer;// = new StandardAnalyzer(Version.LUCENE_44);
-	IndexWriterConfig config;// = new IndexWriterConfig(Version.LUCENE_44, analyzer);
+	StandardAnalyzer analyzer;
+	IndexWriterConfig config;
 	 
-	IndexWriter w;// = new IndexWriter(dir, config);
+	IndexWriter w;
 	
 	Query q;
 	IndexReader reader;
-	IndexSearcher searcher;// = new IndexSearcher(reader);
+	IndexSearcher searcher;
 	
 	public Indexer(){
 		try {
 			dir = FSDirectory.open(INDEX_DIR);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		analyzer= new StandardAnalyzer(Version.LUCENE_44);
@@ -59,7 +58,6 @@ public class Indexer {
 		try {
 			w = new IndexWriter(dir, config);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -71,15 +69,13 @@ public class Indexer {
 			addDoc(w, prp.toString(), ress.toString()); // la proprite et sa valeur seront mises dans Document
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//w.close();
-		
 	}
 	
 	public void SearchWithIndex(String querystr){
 		try {
+			w.close();
 			q = new QueryParser(Version.LUCENE_44, "propriete", analyzer).parse(querystr);
 			
 			int hitsPerPage = 2000;
