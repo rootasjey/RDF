@@ -44,7 +44,7 @@ import org.apache.lucene.util.Version;
 
 public class LoadData {
 	static final File INDEX_DIR = new File("c:\\Temp\\index");
-	FileIndexer indexx = new FileIndexer();
+	public FileIndexer indexx = new FileIndexer();
 	
 	public void readRDFFile(JTextPane editeur,String path1) throws ParseException{
 		
@@ -123,7 +123,7 @@ public class LoadData {
 			            }
 			        }
 
-			        			indexx.searchTheIndex("nom");
+			        			//indexx.searchKeyWord("creator");
 			        			
 			    
 			} catch (IOException e) {
