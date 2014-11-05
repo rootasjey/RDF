@@ -5,14 +5,11 @@
 
 package data.struct;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
+
 import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.RDFNode;
+
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
-import com.hp.hpl.jena.util.FileManager;
+
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
@@ -50,11 +47,21 @@ public class Indexer {
 	IndexReader reader;
 	IndexSearcher searcher;// = new IndexSearcher(reader);
 	
-	public Indexer()throws IOException{
-		dir = FSDirectory.open(INDEX_DIR);
+	public Indexer(){
+		try {
+			dir = FSDirectory.open(INDEX_DIR);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		analyzer= new StandardAnalyzer(Version.LUCENE_44);
 		config= new IndexWriterConfig(Version.LUCENE_44, analyzer);
-		w = new IndexWriter(dir, config);
+		try {
+			w = new IndexWriter(dir, config);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 	
@@ -67,7 +74,7 @@ public class Indexer {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		w.close();
+		//w.close();
 		
 	}
 	

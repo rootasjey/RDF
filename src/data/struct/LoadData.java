@@ -44,6 +44,7 @@ import org.apache.lucene.util.Version;
 
 public class LoadData {
 	static final File INDEX_DIR = new File("c:\\Temp\\index_test");
+	Indexer indx = new Indexer();
 	
 	public void readRDFFile(JTextPane editeur,String path1) throws ParseException{
 		
@@ -88,18 +89,18 @@ public class LoadData {
         /***********************************************************/
 		/*				Partie INDEXATION						   */
 		/***********************************************************/
-        try {
-			Directory dir = FSDirectory.open(INDEX_DIR);
+        
+			//Directory dir = FSDirectory.open(INDEX_DIR);
 		
 			try {
 	        
-		        StandardAnalyzer analyzer = new StandardAnalyzer(Version.LUCENE_44);
-		        
-		        //Directory index = new RAMDirectory();
-		        
-		        IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_44, analyzer);
-			
-				IndexWriter w = new IndexWriter(dir, config);
+//		        StandardAnalyzer analyzer = new StandardAnalyzer(Version.LUCENE_44);
+//		        
+//		        //Directory index = new RAMDirectory();
+//		        
+//		        IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_44, analyzer);
+//			
+//				IndexWriter w = new IndexWriter(dir, config);
 				
 				
 				 int j=0;
@@ -112,8 +113,8 @@ public class LoadData {
 			            j++;
 			            try{
 			            	//INDEXATION
-			            	addDoc(w, predicate.toString(), subject.toString()); // la proprite et sa valeur seront mises dans Document
-			            	
+			            	//addDoc(w, predicate.toString(), subject.toString()); // la proprite et sa valeur seront mises dans Document
+			            	indx.Indexer_Doc(predicate, subject);
 			            	 Doc.insertString(Doc.getLength(), j+"=>\n", style3);
 			            	 Doc.insertString(Doc.getLength(),subject.toString()+" ==> La Ressource \n", style2);
 			            	 Doc.insertString(Doc.getLength(), predicate.toString()+" ==> Propriete \n", style1);
@@ -132,46 +133,42 @@ public class LoadData {
 			            	
 			            }
 			        }
-				w.close();
+				//w.close();
 				/***********************************************************/
 				/*				Partie Recherche						   */
 				/***********************************************************/
 				// Text to search
-				String querystr = "nom";
-				
-				//	The \"title\" arg specifies the default field to use when no field is explicitly specified in the query
-				Query q = new QueryParser(Version.LUCENE_44, "propriete", analyzer).parse(querystr);
-				
-				// Searching code
-							int hitsPerPage = 2000;
-							//IndexReader ir=IndexReader.open(FSDirectory.open(new File(INDEX_DIR)));
-						    IndexReader reader = DirectoryReader.open(dir);
-						    IndexSearcher searcher = new IndexSearcher(reader);
-						    TopScoreDocCollector collector = TopScoreDocCollector.create(hitsPerPage, true);
-						    searcher.search(q, collector);
-						    ScoreDoc[] hits = collector.topDocs().scoreDocs;
-						    
-						    //	Code to display the results of search
-						    System.out.println("Found " + hits.length + " hits.");
-						    for(int i=0;i<hits.length;++i) 
-						    {
-						      int docId = hits[i].doc;
-						      Document d = searcher.doc(docId);
-						      System.out.println((i + 1) + ". " + d.get("propriete") + "\t" + d.get("valeur"));
-						    }
-						    
-						    // reader can only be closed when there is no need to access the documents any more
-						    reader.close();
-				
+//				String querystr = "nom";
+//				
+//				//	The \"title\" arg specifies the default field to use when no field is explicitly specified in the query
+//				Query q = new QueryParser(Version.LUCENE_44, "propriete", analyzer).parse(querystr);
+//				
+//				// Searching code
+//							int hitsPerPage = 2000;
+//							//IndexReader ir=IndexReader.open(FSDirectory.open(new File(INDEX_DIR)));
+//						    IndexReader reader = DirectoryReader.open(dir);
+//						    IndexSearcher searcher = new IndexSearcher(reader);
+//						    TopScoreDocCollector collector = TopScoreDocCollector.create(hitsPerPage, true);
+//						    searcher.search(q, collector);
+//						    ScoreDoc[] hits = collector.topDocs().scoreDocs;
+//						    
+//						    //	Code to display the results of search
+//						    System.out.println("Found " + hits.length + " hits.");
+//						    for(int i=0;i<hits.length;++i) 
+//						    {
+//						      int docId = hits[i].doc;
+//						      Document d = searcher.doc(docId);
+//						      System.out.println((i + 1) + ". " + d.get("propriete") + "\t" + d.get("valeur"));
+//						    }
+//						    
+//						    // reader can only be closed when there is no need to access the documents any more
+//						    reader.close();
+				indx.SearchWithIndex("nom");
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
         
-        } catch (IOException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
         
         
         
@@ -179,13 +176,13 @@ public class LoadData {
        
 	}
 	
-	private static void addDoc(IndexWriter w, String s1, String s2) throws IOException 
-	{
-		  Document doc = new Document();
-		  // A text field will be tokenized
-		  doc.add(new TextField("propriete", s1, Field.Store.YES));
-		  // We use a string field for isbn because we don\'t want it tokenized
-		  doc.add(new StringField("valeur", s2, Field.Store.YES));
-		  w.addDocument(doc);
-	}
+//	private static void addDoc(IndexWriter w, String s1, String s2) throws IOException 
+//	{
+//		  Document doc = new Document();
+//		  // A text field will be tokenized
+//		  doc.add(new TextField("propriete", s1, Field.Store.YES));
+//		  // We use a string field for isbn because we don\'t want it tokenized
+//		  doc.add(new StringField("valeur", s2, Field.Store.YES));
+//		  w.addDocument(doc);
+//	}
 }
