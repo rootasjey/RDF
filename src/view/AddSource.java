@@ -21,6 +21,8 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
+import org.apache.lucene.queryparser.classic.ParseException;
+
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
@@ -135,9 +137,14 @@ public class AddSource extends JDialog {
 			if (retour == JFileChooser.APPROVE_OPTION) {
 				 path = fileChooser.getSelectedFile().getAbsolutePath(); // chemin absolu du fichier choisi 			 
 				 textFieldLink.setText(path);
-				 
+				 /// 
 				 LoadData loadData = new LoadData();
-				 loadData.readRDFFile(jTextPane, path);
+				 try {
+					loadData.readRDFFile(jTextPane, path);
+				} catch (ParseException e) {
+					
+					e.printStackTrace();
+				}
 				 
 			} else ; // pas de fichier choisi
 			
