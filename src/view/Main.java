@@ -28,7 +28,9 @@ import javax.swing.JTextField;
 
 import org.apache.lucene.queryparser.classic.ParseException;
 
-import data.struct.FileIndexer;
+import data.struct.Indexer;
+
+//import data.struct.FileIndexer;
 
 
 @SuppressWarnings("serial")
@@ -48,7 +50,7 @@ public class Main extends JFrame {
 	private JButton  bRecherche=null;
 	private JFrame fen=null;
 	//private JScrollPane jScrollPane = null;
-	//public FileIndexer indexMain = new FileIndexer();
+	public Indexer indexMain = new Indexer();
 	
 	
 	
@@ -256,7 +258,7 @@ public class Main extends JFrame {
 		    public void actionPerformed(ActionEvent e) {
 		    	System.out.println("we are looking for:");
 		        System.out.println(recherche.getText());
-		       // indexMain.searchKeyWord(recherche.getText());
+		        indexMain.SearchWithIndex(recherche.getText());
 		    }
 		};
 		bRecherche.addActionListener(monActionListener);
