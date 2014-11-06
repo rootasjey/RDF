@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 
 import javax.swing.JButton;
@@ -34,7 +35,7 @@ import com.hp.hpl.jena.util.FileManager;
 
 import data.struct.LoadData;
 
-@SuppressWarnings("serial")
+
 public class AddSource extends JDialog {
 
 	private JPanel mainPane				=	null;
@@ -108,14 +109,19 @@ public class AddSource extends JDialog {
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					getJfc();
+					try {
+						getJfc();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}
 			});
 		}
 		return btnBrowse;
 	}
 	
-	private String getJfc() {
+	private String getJfc() throws IOException {
 		if	(fileChooser	==	null){
 			fileChooser = new JFileChooser();
 			
@@ -137,7 +143,7 @@ public class AddSource extends JDialog {
 			if (retour == JFileChooser.APPROVE_OPTION) {
 				 path = fileChooser.getSelectedFile().getAbsolutePath(); // chemin absolu du fichier choisi 			 
 				 textFieldLink.setText(path);
-				 /// 
+				 
 				 LoadData loadData = new LoadData();
 				 try {
 					loadData.readRDFFile(jTextPane, path);

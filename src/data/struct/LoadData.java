@@ -11,6 +11,8 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
+import org.apache.lucene.queryparser.classic.ParseException;
+
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
@@ -22,31 +24,14 @@ import com.hp.hpl.jena.util.FileManager;
 
 import java.io.IOException;
 
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.StringField;
-import org.apache.lucene.document.TextField;
-import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.queryparser.classic.ParseException;
-import org.apache.lucene.queryparser.classic.QueryParser;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopScoreDocCollector;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.util.Version;
+
 
 
 public class LoadData {
 	static final File INDEX_DIR = new File("c:\\Temp\\index");
-	public FileIndexer indexx = new FileIndexer();
+	FileIndexer indexx = new FileIndexer();
 	
-	public void readRDFFile(JTextPane editeur,String path1) throws ParseException{
+	public void readRDFFile(JTextPane editeur,String path1) throws ParseException, IOException{
 		
 		Model model = ModelFactory.createDefaultModel();
 		String inputFileName =path1;
@@ -88,47 +73,40 @@ public class LoadData {
         
         
 	
-			try {
-	        	
-				 int j=0;
-			        // print out the predicate, subject and object of each statement
-			        while (iter.hasNext()) {
-			            Statement stmt      = iter.nextStatement();         // get next statement
-			            Resource  subject   = stmt.getSubject();   // get the subject
-			            Property  predicate = stmt.getPredicate(); // get the predicate
-			            RDFNode   object    = stmt.getObject();    // get the object
-			            j++;
-			            try{
-			        
-			        		
-			            			indexx.IndexerDoc(predicate, subject);
-			            			
-			            	
-			            	 Doc.insertString(Doc.getLength(), j+"=>\n", style3);
-			            	 Doc.insertString(Doc.getLength(),subject.toString()+" ==> La Ressource \n", style2);
-			            	 Doc.insertString(Doc.getLength(), predicate.toString()+" ==> Propriete \n", style1);
-			            	 
-			            	 if (object instanceof Resource) {
-			            		 //addDoc(w, predicate.toString(), object.toString());
-			                     Doc.insertString(Doc.getLength(),object.toString()+" ==> Ressource de Ressource\n\n", defaut);
-			                 } else {
-			                     // object is a literal
-			                     Doc.insertString(Doc.getLength()," \"" + object.toString() + "\""+" ==> Le litérale\n\n", defaut);
-			                 }
-			            	
-			            }
-			            catch(BadLocationException e){
-			            	e.printStackTrace();
-			            	
-			            }
-			        }
-
-			        			//indexx.searchKeyWord("creator");
-			        			
+			int j=0;
+			    // print out the predicate, subject and object of each statement
+			    while (iter.hasNext()) {
+			        Statement stmt      = iter.nextStatement();         // get next statement
+			        Resource  subject   = stmt.getSubject();   // get the subject
+			        Property  predicate = stmt.getPredicate(); // get the predicate
+			        RDFNode   object    = stmt.getObject();    // get the object
+			        j++;
+			        try{
 			    
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			    		
+			        			indexx.IndexerDoc(predicate, subject);
+			        			
+			        	
+			        	 Doc.insertString(Doc.getLength(), j+"=>\n", style3);
+			        	 Doc.insertString(Doc.getLength(),subject.toString()+" ==> La Ressource \n", style2);
+			        	 Doc.insertString(Doc.getLength(), predicate.toString()+" ==> Propriete \n", style1);
+			        	 
+			        	 if (object instanceof Resource) {
+			        		 //addDoc(w, predicate.toString(), object.toString());
+			                 Doc.insertString(Doc.getLength(),object.toString()+" ==> Ressource de Ressource\n\n", defaut);
+			             } else {
+			                 // object is a literal
+			                 Doc.insertString(Doc.getLength()," \"" + object.toString() + "\""+" ==> Le litérale\n\n", defaut);
+			             }
+			        	
+			        }
+			        catch(BadLocationException e){
+			        	e.printStackTrace();
+			        	
+			        }
+			    }
+			    			
+			    			indexx.searchKeyWord("creator");
       
 	}
 

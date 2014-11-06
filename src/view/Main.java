@@ -48,7 +48,7 @@ public class Main extends JFrame {
 	private JButton  bRecherche=null;
 	private JFrame fen=null;
 	//private JScrollPane jScrollPane = null;
-	public FileIndexer indexMain = new FileIndexer();
+	//public FileIndexer indexMain = new FileIndexer();
 	
 	
 	
@@ -254,16 +254,9 @@ public class Main extends JFrame {
 		
 		ActionListener monActionListener = new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
-		       // System.out.println(recherche.getText());
-		        try {
-					indexMain.searchKeyWord(recherche.getText());
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (ParseException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+		    	System.out.println("we are looking for:");
+		        System.out.println(recherche.getText());
+		       // indexMain.searchKeyWord(recherche.getText());
 		    }
 		};
 		bRecherche.addActionListener(monActionListener);
