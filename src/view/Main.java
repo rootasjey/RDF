@@ -25,6 +25,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import data.struct.Indexer;
+
 
 @SuppressWarnings("serial")
 public class Main extends JFrame {
@@ -249,7 +251,11 @@ public class Main extends JFrame {
 		
 		ActionListener monActionListener = new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
-		        System.out.println(recherche.getText());
+		    	String text = recherche.getText();
+		        System.out.println(text);
+		        
+		        Indexer indexer = new Indexer();
+		        indexer.SearchWithIndex(text);
 		    }
 		};
 		bRecherche.addActionListener(monActionListener);

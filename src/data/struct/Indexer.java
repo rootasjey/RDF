@@ -79,7 +79,6 @@ public class Indexer {
 		    reader = DirectoryReader.open(dir);
 		    
 		    searcher = new IndexSearcher(reader);
-		    searcher = new IndexSearcher(reader);
 		    TopScoreDocCollector collector = TopScoreDocCollector.create(hitsPerPage, true);
 		    searcher.search(q, collector);
 		    ScoreDoc[] hits = collector.topDocs().scoreDocs;
