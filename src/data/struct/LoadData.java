@@ -21,6 +21,8 @@ import com.hp.hpl.jena.util.FileManager;
 
 import java.io.IOException;
 
+import jenaadapter.GraphStreamJena;
+
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -40,13 +42,14 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 //import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.Version;
+import org.graphstream.graph.Graph;
 
 
 public class LoadData {
-	static final File INDEX_DIR = new File("c:\\Temp\\mon_index");
+	//static final File INDEX_DIR = new File("c:\\Temp\\mon_index");
 	Indexer indx = new Indexer();
 	
-	public void readRDFFile(JTextPane editeur,String path1) throws ParseException{
+	public void readRDFFile(JTextPane editeur,String path1) throws ParseException, IOException, InterruptedException{
 		
 		Model model = ModelFactory.createDefaultModel();
 		String inputFileName =path1;
@@ -87,6 +90,12 @@ public class LoadData {
         StyleConstants.setFontSize(style3, 22);
         
         
+        GraphStreamJena jenaAdapter=new GraphStreamJena(model);
+        Graph graph=jenaAdapter.buildGraph();
+       
+        
+    
+        
 	
 			try {
 	        	
@@ -102,7 +111,9 @@ public class LoadData {
 			            	/***********************************************************/
 			        		/*				Partie INDEXATION						   */
 			        		
-			            			indx.Indexer_Doc(predicate, subject);
+			            			//indx.Indexer_Doc(predicate, subject,object);
+			            	indx.Indexer_Doc(predicate, subject,object);
+			            			
 			            			
 			            	/*				Fin d'INDEXATION						   */
 			            	/***********************************************************/
@@ -124,11 +135,12 @@ public class LoadData {
 			            	
 			            }
 			        }
-				//w.close();
+			      //  graph.display();
+				    indx.closeWriter();
 				/***********************************************************/
 				/*				Partie Recherche						   */
 				
-			        			indx.SearchWithIndex("nom");
+			        	//	indx.SearchWithIndex("Smith");
 			        			
 			    /*				FIN de la Recherche						   */		
 			    /***********************************************************/

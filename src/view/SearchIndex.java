@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -92,6 +93,12 @@ public class SearchIndex  extends JDialog {
 					} catch (ParseException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
 					}
 				}
 			});
@@ -99,7 +106,7 @@ public class SearchIndex  extends JDialog {
 		return btnBrowse;
 	}
 	
-	private String getJfc() throws ParseException {
+	private String getJfc() throws ParseException, IOException, InterruptedException {
 		if	(fileChooser	==	null){
 			fileChooser = new JFileChooser();
 			
@@ -109,9 +116,10 @@ public class SearchIndex  extends JDialog {
 			FileFilter ttl		= new SimpleFilter("TURTLE", ".ttl");
 			FileFilter n3		= new SimpleFilter("N3", ".txt");
 			
+			
+			fileChooser.addChoosableFileFilter(rdf);
 			fileChooser.addChoosableFileFilter(nt);
 			fileChooser.addChoosableFileFilter(xml);
-			fileChooser.addChoosableFileFilter(rdf);
 			fileChooser.addChoosableFileFilter(ttl);
 			fileChooser.addChoosableFileFilter(n3);
 			fileChooser.setAcceptAllFileFilterUsed(false);

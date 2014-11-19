@@ -1,10 +1,10 @@
-
 package data.struct;
 
 
 import com.hp.hpl.jena.rdf.model.Property;
-
+import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
+
 
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -31,7 +31,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class Indexer {
-	static final File INDEX_DIR = new File("c:\\Temp\\index_test2");
+	static final File INDEX_DIR = new File("c:\\Temp\\index_test");
 	Directory dir;
 	
 	StandardAnalyzer analyzer;
@@ -59,10 +59,10 @@ public class Indexer {
 		
 	}
 	
-	public void Indexer_Doc(Property prp, Resource ress) throws IOException{
+	public void Indexer_Doc(Property prp, Resource ress,RDFNode   object) throws IOException{
 		try {
 			
-			addDoc(w, prp.toString(), ress.toString()); // la proprite et sa valeur seront mises dans Document
+			addDoc(w, prp.toString(), ress.toString(),object.toString()); // la proprite et sa valeur seront mises dans Document
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -71,13 +71,15 @@ public class Indexer {
 	
 	public void SearchWithIndex(String querystr){
 		try {
-			w.close();
-			q = new QueryParser(Version.LUCENE_44, "propriete", analyzer).parse(querystr);
+			
+			q = new QueryParser(Version.LUCENE_44, "literale", analyzer).parse(querystr);
 			
 			int hitsPerPage = 2000;
 
 		    reader = DirectoryReader.open(dir);
 		    
+
+
 		    searcher = new IndexSearcher(reader);
 		    TopScoreDocCollector collector = TopScoreDocCollector.create(hitsPerPage, true);
 		    searcher.search(q, collector);
@@ -89,7 +91,7 @@ public class Indexer {
 		    {
 		      int docId = hits[i].doc;
 		      Document d = searcher.doc(docId);
-		      System.out.println((i + 1) + ". " + d.get("propriete") + "\t" + d.get("valeur"));
+		      System.out.println((i + 1) + ". " + d.get("propriete") + "\t" + d.get("literale"));
 		    }
 		    
 		    // reader can only be closed when there is no need to access the documents any more
@@ -101,7 +103,7 @@ public class Indexer {
 		}
 	}
 	
-	private static void addDoc(IndexWriter w, String prop, String ress) throws IOException 
+	private static void addDoc(IndexWriter w, String prop, String ress,String lite) throws IOException 
 	{
 		/*	Document :
 		  	 Prop		Ress	
@@ -110,11 +112,17 @@ public class Indexer {
 		 	---------------------- */
 		
 		Document doc = new Document();
-		 
+		doc.add(new TextField("ressource", ress, Field.Store.YES));
 		doc.add(new TextField("propriete", prop, Field.Store.YES));
+		doc.add(new TextField("literale", lite, Field.Store.YES));
 		
-		doc.add(new StringField("valeur", ress, Field.Store.YES));
+		System.out.println(" {"+ress+" "+prop+""+ lite+" }");
+		
 		  
 		w.addDocument(doc);
+	}
+	
+	public void closeWriter() throws IOException{
+		w.close();
 	}
 }
