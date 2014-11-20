@@ -13,6 +13,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -25,7 +27,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import jenaadapter.GraphStreamJena;
+import jenaadapter.JenaUtils;
+
+import org.graphstream.graph.Graph;
+
 import data.struct.Indexer;
+import data.struct.Triplet;
 
 
 @SuppressWarnings("serial")
@@ -253,9 +261,21 @@ public class Main extends JFrame {
 		    public void actionPerformed(ActionEvent e) {
 		    	String text = recherche.getText();
 		        System.out.println(text);
-		        
+		        Graph graph=null;
+		        GraphStreamJena jenaAdapter=new GraphStreamJena(JenaUtils.loadJenaModel());
+		        try {
+                     graph=jenaAdapter.buildGraph();
+				} catch (IOException | InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+		        graph.display();
 		        Indexer indexer = new Indexer();
-		        indexer.SearchWithIndex(text);
+		        List<Triplet> list;
+		        list=indexer.SearchWithIndex(text);
+		        jenaAdapter.viewResultNode( list);
+		        if(list.size()>1)
+		        jenaAdapter.printShortPath(list);
 		    }
 		};
 		bRecherche.addActionListener(monActionListener);

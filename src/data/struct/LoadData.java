@@ -1,7 +1,7 @@
 package data.struct;
 
 import java.awt.Color;
-import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 
 import javax.swing.JTextPane;
@@ -9,6 +9,12 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
+
+import jenaadapter.GraphStreamJena;
+import jenaadapter.JenaUtils;
+
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.graphstream.graph.Graph;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -18,35 +24,11 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.util.FileManager;
-
-import java.io.IOException;
-
-import jenaadapter.GraphStreamJena;
-
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.StringField;
-import org.apache.lucene.document.TextField;
-import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.queryparser.classic.ParseException;
-import org.apache.lucene.queryparser.classic.QueryParser;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopScoreDocCollector;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
 //import org.apache.lucene.store.RAMDirectory;
-import org.apache.lucene.util.Version;
-import org.graphstream.graph.Graph;
 
 
 public class LoadData {
-	//static final File INDEX_DIR = new File("c:\\Temp\\mon_index");
+
 	Indexer indx = new Indexer();
 	
 	public void readRDFFile(JTextPane editeur,String path1) throws ParseException, IOException, InterruptedException{
@@ -93,7 +75,7 @@ public class LoadData {
         GraphStreamJena jenaAdapter=new GraphStreamJena(model);
         Graph graph=jenaAdapter.buildGraph();
        
-        
+        JenaUtils.setLastFile(inputFileName);
     
         
 	
@@ -135,15 +117,10 @@ public class LoadData {
 			            	
 			            }
 			        }
-			      //  graph.display();
+			        graph.display();
 				    indx.closeWriter();
-				/***********************************************************/
-				/*				Partie Recherche						   */
-				
-			        	//	indx.SearchWithIndex("Smith");
-			        			
-			    /*				FIN de la Recherche						   */		
-			    /***********************************************************/
+				//   jenaAdapter.viewResultNode(new Indexer().SearchWithIndex("Smith"));
+			
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
