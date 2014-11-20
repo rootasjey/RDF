@@ -8,14 +8,20 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.InputStream;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
@@ -37,16 +43,18 @@ import data.struct.LoadData;
 @SuppressWarnings("serial")
 public class AddSource extends JDialog {
 
-	private JPanel mainPane				=	null;
-	private JPanel northPane				=	null;
-	private JPanel centralPanel			=	null;
-	private String path							=	null;
+	private JPanel mainPane			=	null;
+	private JPanel northPane			=	null;
+	private JPanel centralPanel		=	null;
+	private String path					=	null;
 	private JButton btnBrowse			=	null;
 	private JTextPane jTextPane 		=	null;
 	private JScrollPane jScrollPane1 = null;
 	private JFileChooser fileChooser	=	null;
 	private JTextField textFieldLink	=	null;
-
+	
+	private JList<String> list			= null;
+	private JPanel westPanel			= null;
 	
 	public AddSource() {
 		super();
@@ -56,10 +64,11 @@ public class AddSource extends JDialog {
 	
 	private JPanel getMain() {
 		
-		if (mainPane==null) {
-			mainPane=new JPanel(new BorderLayout());
+		if (mainPane == null) {
+			mainPane = new JPanel(new BorderLayout());
 			mainPane.add(getNorth(), BorderLayout.NORTH);
 			mainPane.add(getJScrollPane(), BorderLayout.CENTER);
+			mainPane.add(getWest(), BorderLayout.WEST);
 		}
 		return mainPane;
 	}
@@ -79,7 +88,7 @@ public class AddSource extends JDialog {
        this.setVisible(true);
        this.setLocationRelativeTo(null);
        this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-       this.setAlwaysOnTop(true);
+//       this.setAlwaysOnTop(true);
 	}
 	
 	
@@ -92,6 +101,27 @@ public class AddSource extends JDialog {
 		return northPane;
 	}
 	
+	private JPanel getWest () {
+		if (westPanel == null) {
+			westPanel = new JPanel();
+			
+			String[] source = {"source12232", "source2", "source3"};
+			list = new JList<String>(source);
+			list.setSelectedIndex(0);
+			
+			list.addListSelectionListener(new ListSelectionListener() {
+				public void valueChanged(ListSelectionEvent e) {
+					System.out.println(list.getSelectedIndex());
+				}
+			});
+			
+			JScrollPane scrollpane = new JScrollPane(list);
+			
+			westPanel.add(scrollpane, BorderLayout.SOUTH);
+//			westPanel.setSize(300, 500);
+		}
+		return westPanel;
+	}
 	
 	private JTextField getLink() {
 		if(textFieldLink == null) {
@@ -120,28 +150,34 @@ public class AddSource extends JDialog {
 		return btnBrowse;
 	}
 	
+	// Ouvre un fichier
 	private String getJfc() throws ParseException {
-		if	(fileChooser	==	null){
+		if	(fileChooser	==	null) {
 			fileChooser = new JFileChooser();
 			
+			FileFilter rdf 		= new SimpleFilter("RDF", ".rdf");
 			FileFilter nt		= new SimpleFilter("N-TRIPLE", ".nt");
 			FileFilter xml		= new SimpleFilter("XML", ".xml");
-			FileFilter rdf 		= new SimpleFilter("RDF", ".rdf");
 			FileFilter ttl		= new SimpleFilter("TURTLE", ".ttl");
 			FileFilter n3		= new SimpleFilter("N3", ".txt");
 			
+			fileChooser.addChoosableFileFilter(rdf);
 			fileChooser.addChoosableFileFilter(nt);
 			fileChooser.addChoosableFileFilter(xml);
-			fileChooser.addChoosableFileFilter(rdf);
 			fileChooser.addChoosableFileFilter(ttl);
 			fileChooser.addChoosableFileFilter(n3);
 			fileChooser.setAcceptAllFileFilterUsed(false);
+			
+			// Ajoute un filtre multiple
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("Ressources", "rdf", "nt", "xml", "ttl", "txt");
+			fileChooser.setFileFilter(filter);
 			
 			int retour = fileChooser.showOpenDialog(this);
 			
 			if (retour == JFileChooser.APPROVE_OPTION) {
 				 path = fileChooser.getSelectedFile().getAbsolutePath(); // chemin absolu du fichier choisi 			 
 				 textFieldLink.setText(path);
+//				 System.out.println(fileChooser.getSelectedFile());
 				 
 				 LoadData loadData = new LoadData();
 				 loadData.readRDFFile(jTextPane, path);
@@ -158,7 +194,6 @@ public class AddSource extends JDialog {
 		if (jTextPane == null) {
 			jTextPane = new JTextPane();
 			jTextPane.setEditable(false);
-			
 		}
 		return jTextPane;
 	}

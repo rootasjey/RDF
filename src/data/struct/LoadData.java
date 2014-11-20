@@ -21,6 +21,7 @@ import com.hp.hpl.jena.util.FileManager;
 
 import java.io.IOException;
 
+import org.apache.jena.iri.impl.Main;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -44,7 +45,7 @@ import org.apache.lucene.util.Version;
 
 public class LoadData {
 	static final File INDEX_DIR = new File("c:\\Temp\\mon_index");
-	Indexer indx = new Indexer();
+//	Indexer indx = new Indexer();
 	
 	public void readRDFFile(JTextPane editeur,String path1) throws ParseException{
 		
@@ -93,16 +94,16 @@ public class LoadData {
 				 int j=0;
 			        // print out the predicate, subject and object of each statement
 			        while (iter.hasNext()) {
-			            Statement stmt      = iter.nextStatement();         // get next statement
-			            Resource  subject   = stmt.getSubject();   // get the subject
-			            Property  predicate = stmt.getPredicate(); // get the predicate
-			            RDFNode   object    = stmt.getObject();    // get the object
+			            Statement stmt      		= iter.nextStatement();         // get next statement
+			            Resource  subject   	= stmt.getSubject();   // get the subject
+			            Property  predicate 	= stmt.getPredicate(); // get the predicate
+			            RDFNode   object    	= stmt.getObject();    // get the object
 			            j++;
 			            try{
 			            	/***********************************************************/
 			        		/*				Partie INDEXATION						   */
-			        		
-			            			indx.Indexer_Doc(predicate, subject);
+			        				
+			            		//view.Main.indexer.Indexer_Doc(subject, predicate);
 			            			
 			            	/*				Fin d'INDEXATION						   */
 			            	/***********************************************************/
@@ -111,11 +112,16 @@ public class LoadData {
 			            	 Doc.insertString(Doc.getLength(), predicate.toString()+" ==> Propriete \n", style1);
 			            	 
 			            	 if (object instanceof Resource) {
-			            		 //addDoc(w, predicate.toString(), object.toString());
 			                     Doc.insertString(Doc.getLength(),object.toString()+" ==> Ressource de Ressource\n\n", defaut);
+			                     
+			                     // Indexation
+			            		 view.Main.indexer.Indexer_Doc(subject, predicate);
 			                 } else {
 			                     // object is a literal
 			                     Doc.insertString(Doc.getLength()," \"" + object.toString() + "\""+" ==> Le litérale\n\n", defaut);
+			                  
+			                     // Indexation
+			                     view.Main.indexer.Indexer_Doc(subject, predicate, object);
 			                 }
 			            	
 			            }
@@ -128,7 +134,8 @@ public class LoadData {
 				/***********************************************************/
 				/*				Partie Recherche						   */
 				
-			        			indx.SearchWithIndex("nom");
+//			        			indx.SearchWithIndex("nom");
+//			        			view.Main.indexer.SearchWithIndex("nom");
 			        			
 			    /*				FIN de la Recherche						   */		
 			    /***********************************************************/

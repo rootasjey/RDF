@@ -18,13 +18,14 @@ import javax.swing.filechooser.FileFilter;
 import org.apache.lucene.queryparser.classic.ParseException;
 
 import view.AddSource.SimpleFilter;
+import data.struct.Indexer;
 import data.struct.LoadData;
 
 public class SearchIndex  extends JDialog {
-	private JPanel mainPane				=	null;
-	private JPanel northPane				=	null;
-	private JPanel centralPanel			=	null;
-	private String path							=	null;
+	private JPanel mainPane			=	null;
+	private JPanel northPane			=	null;
+	private JPanel centralPanel		=	null;
+	private String path					=	null;
 	private JButton btnBrowse			=	null;
 	private JTextPane jTextPane 		=	null;
 	private JScrollPane jScrollPane1 = null;
@@ -48,8 +49,8 @@ public class SearchIndex  extends JDialog {
 	
 	private void Initialize() {
 		Dimension tailleEcran = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-		int hauteur = (int)(tailleEcran.getHeight()*0.5);
-		int largeur = (int)(tailleEcran.getWidth()*0.6);
+		int hauteur = (int)(tailleEcran.getHeight()*0.4);
+		int largeur = (int)(tailleEcran.getWidth()*0.4);
 		   
 	   this.setTitle("Moteur de recherches");
 	   this.setContentPane(getMain());
@@ -58,7 +59,7 @@ public class SearchIndex  extends JDialog {
        this.setVisible(true);
        this.setLocationRelativeTo(null);
        this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-       this.setAlwaysOnTop(true);
+//       this.setAlwaysOnTop(true);
 	}
 	
 
@@ -75,7 +76,7 @@ public class SearchIndex  extends JDialog {
 	private JTextField getLink() {
 		if(textFieldLink == null) {
 			textFieldLink = new JTextField(50);
-			textFieldLink.setEditable(false);
+//			textFieldLink.setEditable(false);
 		}
 		return textFieldLink;
 	}
@@ -87,12 +88,8 @@ public class SearchIndex  extends JDialog {
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					try {
-						getJfc();
-					} catch (ParseException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
+					String text = textFieldLink.getText();			        
+			        Main.indexer.SearchWithIndex(text, jTextPane);
 				}
 			});
 		}
