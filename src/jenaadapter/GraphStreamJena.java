@@ -8,6 +8,7 @@ import org.graphstream.algorithm.Dijkstra;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
+import org.graphstream.graph.implementations.MultiGraph;
 //import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.graph.implementations.SingleGraph;
 
@@ -23,7 +24,7 @@ import data.struct.Triplet;
 public class GraphStreamJena {
 
 	private Model model;
-	private SingleGraph graph;
+	private MultiGraph graph;
 	
 	
 	
@@ -33,12 +34,12 @@ public class GraphStreamJena {
 	 */
 	public GraphStreamJena(Model model) {
 		this.model = model;
-		graph=new  SingleGraph("jena");
+		graph=new  MultiGraph("jena");
 		
 	}
 	
 	
-	public SingleGraph buildGraph() throws IOException, InterruptedException{
+	public MultiGraph buildGraph() throws IOException, InterruptedException{
 		
 		this.addNode();
 
@@ -165,7 +166,7 @@ public class GraphStreamJena {
 		return graph;
 	}
 
-	public  void setGraph(SingleGraph graph) {
+	public  void setGraph(MultiGraph graph) {
 		this.graph = graph;
 	}
 
