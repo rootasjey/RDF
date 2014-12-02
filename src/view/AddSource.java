@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 
 import javax.swing.BoxLayout;
@@ -143,6 +144,12 @@ public class AddSource extends JDialog {
 					} catch (ParseException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
 					}
 				}
 			});
@@ -150,9 +157,9 @@ public class AddSource extends JDialog {
 		return btnBrowse;
 	}
 	
-	// Ouvre un fichier
-	private String getJfc() throws ParseException {
-		if	(fileChooser	==	null) {
+
+	private String getJfc() throws ParseException, IOException, InterruptedException {
+		if	(fileChooser	==	null){
 			fileChooser = new JFileChooser();
 			
 			FileFilter rdf 		= new SimpleFilter("RDF", ".rdf");

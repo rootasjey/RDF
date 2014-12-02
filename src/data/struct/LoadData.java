@@ -1,7 +1,7 @@
 package data.struct;
 
 import java.awt.Color;
-import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 
 import javax.swing.JTextPane;
@@ -9,6 +9,12 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
+
+import jenaadapter.GraphStreamJena;
+import jenaadapter.JenaUtils;
+
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.graphstream.graph.Graph;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -18,36 +24,13 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.util.FileManager;
-
-import java.io.IOException;
-
-import org.apache.jena.iri.impl.Main;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.StringField;
-import org.apache.lucene.document.TextField;
-import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.queryparser.classic.ParseException;
-import org.apache.lucene.queryparser.classic.QueryParser;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopScoreDocCollector;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
 //import org.apache.lucene.store.RAMDirectory;
-import org.apache.lucene.util.Version;
 
 
 public class LoadData {
-	static final File INDEX_DIR = new File("c:\\Temp\\mon_index");
-//	Indexer indx = new Indexer();
+	Indexer indx = new Indexer();
 	
-	public void readRDFFile(JTextPane editeur,String path1) throws ParseException{
+	public void readRDFFile(JTextPane editeur,String path1) throws ParseException, IOException, InterruptedException{
 		
 		Model model = ModelFactory.createDefaultModel();
 		String inputFileName =path1;
@@ -88,6 +71,12 @@ public class LoadData {
         StyleConstants.setFontSize(style3, 22);
         
         
+        GraphStreamJena jenaAdapter=new GraphStreamJena(model);
+        Graph graph=jenaAdapter.buildGraph();
+       
+        JenaUtils.setLastFile(inputFileName);
+    
+        
 	
 			try {
 	        	
@@ -102,8 +91,9 @@ public class LoadData {
 			            try{
 			            	/***********************************************************/
 			        		/*				Partie INDEXATION						   */
-			        				
-			            		//view.Main.indexer.Indexer_Doc(subject, predicate);
+			        		
+			            			//indx.Indexer_Doc(predicate, subject,object);
+			            	indx.Indexer_Doc(predicate, subject,object);
 			            			
 			            	/*				Fin d'INDEXATION						   */
 			            	/***********************************************************/
@@ -115,13 +105,13 @@ public class LoadData {
 			                     Doc.insertString(Doc.getLength(),object.toString()+" ==> Ressource de Ressource\n\n", defaut);
 			                     
 			                     // Indexation
-			            		 view.Main.indexer.Indexer_Doc(subject, predicate);
+//			            		 view.Main.indexer.Indexer_Doc(subject, predicate);
 			                 } else {
 			                     // object is a literal
 			                     Doc.insertString(Doc.getLength()," \"" + object.toString() + "\""+" ==> Le litérale\n\n", defaut);
 			                  
 			                     // Indexation
-			                     view.Main.indexer.Indexer_Doc(subject, predicate, object);
+//			                     view.Main.indexer.Indexer_Doc(subject, predicate, object);
 			                 }
 			            	
 			            }
@@ -130,15 +120,10 @@ public class LoadData {
 			            	
 			            }
 			        }
-				//w.close();
-				/***********************************************************/
-				/*				Partie Recherche						   */
-				
-//			        			indx.SearchWithIndex("nom");
-//			        			view.Main.indexer.SearchWithIndex("nom");
-			        			
-			    /*				FIN de la Recherche						   */		
-			    /***********************************************************/
+			        graph.display();
+				    indx.closeWriter();
+				//   jenaAdapter.viewResultNode(new Indexer().SearchWithIndex("Smith"));
+			
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
