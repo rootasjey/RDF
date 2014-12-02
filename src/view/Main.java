@@ -10,6 +10,8 @@ import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -31,13 +33,15 @@ import jenaadapter.GraphStreamJena;
 import jenaadapter.JenaUtils;
 
 import org.graphstream.graph.Graph;
+import org.graphstream.ui.swingViewer.View;
+import org.graphstream.ui.swingViewer.Viewer;
 
 import data.struct.Indexer;
 import data.struct.Triplet;
 
 
 @SuppressWarnings("serial")
-public class Main extends JFrame {
+public class Main extends JFrame implements ComponentListener {
 	
 	private JMenuBar jJMenuBar = null;
 	private JMenu parametre = null;
@@ -49,9 +53,12 @@ public class Main extends JFrame {
 	private JPanel panelNord1=null;
 	private JPanel panelNord2=null;
 	private JPanel panelCentre=null;
+	private JPanel panelWest=null;
 	private JTextField  recherche=null;
 	private JButton  bRecherche=null;
 	private JFrame fen=null;
+	private  Viewer viewer=null;
+	private View view=null;
 	//private JScrollPane jScrollPane = null;
 	
 	
@@ -158,8 +165,10 @@ public class Main extends JFrame {
        this.setVisible(true);
        this.setLocationRelativeTo(null);
        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+       this.addComponentListener(this);
        
        fen=this;
+       fen.addComponentListener(this);
        
        
        //this.setResizable(false);
@@ -173,6 +182,8 @@ public class Main extends JFrame {
 			panelPrincipal=new JPanel(new BorderLayout());
 			
 			panelPrincipal.add(getNordPanel(),BorderLayout.NORTH);
+			panelPrincipal.add(getWestPanel(),BorderLayout.WEST);
+			panelPrincipal.add(getcentrePanel(),BorderLayout.CENTER);
 		//	panelPrincipal.setBackground(Color.WHITE);
 			
 		}
@@ -240,6 +251,45 @@ public class Main extends JFrame {
 		return panelNord2;
 	}
 	
+	
+	
+	
+	private JPanel getWestPanel(){
+		
+		if(panelWest==null){
+			panelWest=new JPanel();
+			
+			  Dimension tailleEcran = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+			   int hauteur = (int)(tailleEcran.getHeight()*0.9*0.7);
+			   int largeur = (int)(tailleEcran.getWidth()*0.8*0.4);
+			panelWest.setPreferredSize(new Dimension(largeur, hauteur));
+			
+	
+			
+			
+		}
+		return panelWest;
+	}
+	
+	
+	
+	private JPanel getcentrePanel(){
+		
+		if(panelCentre==null){
+			panelCentre=new JPanel();
+			
+			  Dimension tailleEcran = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+			   int hauteur = (int)(tailleEcran.getHeight()*0.9*0.7);
+			   int largeur = (int)(tailleEcran.getWidth()*0.8*0.6);
+			   panelCentre.setPreferredSize(new Dimension(largeur, hauteur));
+			
+			
+		}
+		return panelCentre;
+	}
+	
+	
+	
 	private JTextField getRecherche(){
 		
 		if(recherche==null){
@@ -255,6 +305,7 @@ public class Main extends JFrame {
 		
 		if(bRecherche==null){
 			bRecherche=new JButton("Recherche");
+			
 		}
 		
 		ActionListener monActionListener = new ActionListener() {
@@ -269,7 +320,18 @@ public class Main extends JFrame {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-		        graph.display();
+		        getWestPanel().removeAll();
+		       // viewer = graph.display();
+		        viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+		        viewer.enableAutoLayout();
+				view = viewer.addDefaultView(false);
+	
+				view.setPreferredSize(new Dimension(getWestPanel().getWidth(), getWestPanel().getHeight()));				
+				view.resizeFrame(getWestPanel().getWidth(), getWestPanel().getHeight());
+
+				
+				getWestPanel().add(view);
+				getWestPanel().validate();
 		        Indexer indexer = new Indexer();
 		        List<Triplet> list;
 		        list=indexer.SearchWithIndex(text);
@@ -295,6 +357,44 @@ public class Main extends JFrame {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 			new Main();
+	}
+
+	@Override
+	public void componentResized(ComponentEvent e) {
+
+		
+           int largeur=(int) (fen.getWidth()*0.6);
+           int hauteur=(int)(fen.getHeight()*0.7);
+           int largeur2=(int) (fen.getWidth()*0.4);
+		   getWestPanel().setPreferredSize(new Dimension(largeur2, hauteur));
+		   getcentrePanel().setPreferredSize(new Dimension(largeur, hauteur));
+		   
+		   if(view!=null)
+		   {
+		   view.setPreferredSize(new Dimension(largeur2, hauteur));
+		   view.resizeFrame(largeur2, hauteur);
+		   }
+		   fen.validate();
+
+		
+	}
+
+	@Override
+	public void componentMoved(ComponentEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void componentShown(ComponentEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void componentHidden(ComponentEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
