@@ -37,6 +37,7 @@ import org.graphstream.graph.Graph;
 import org.graphstream.ui.swingViewer.View;
 import org.graphstream.ui.swingViewer.Viewer;
 
+import controller.Sparqlquery;
 import data.struct.Indexer;
 import data.struct.Triplet;
 
@@ -205,7 +206,7 @@ public class Main extends JFrame implements ComponentListener {
        
        //this.setResizable(false);
        
-
+       fen.getRootPane().setDefaultButton(bRecherche);
 	}
 	
 	// Construit la fenêtre principale
@@ -362,6 +363,9 @@ public class Main extends JFrame implements ComponentListener {
 		        jenaAdapter.viewResultNode( list);
 		        if(list.size()>1)
 		        jenaAdapter.printShortPath(list);
+		        
+		        // SPARQL
+		        Sparqlquery.createModel(list);
 		    }
 		};
 		bRecherche.addActionListener(monActionListener);
