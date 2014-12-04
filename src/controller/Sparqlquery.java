@@ -20,6 +20,7 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
+import com.hp.hpl.jena.vocabulary.VCARD;
 
 import data.struct.Triplet;
 
@@ -34,15 +35,26 @@ public class Sparqlquery {
 	public static void createModel(List<Triplet> list) {
 		for (int i = 0; i < list.size(); i++) {
 			Triplet triplet = list.get(i);
-			String resourceModel = triplet.getObjet();
+			String tripletResult = triplet.getObjet();
+			String tripletProp = triplet.getObjet();
+			String tripletResource = triplet.getRessource();
 			
-//			System.out.println(resourceModel);
+//			System.out.println("object : " + triplet.getObjet());
+//			System.out.println("prop : " + triplet.getPropriete());
+//			System.out.println("ress : " + triplet.getRessource());
 			
 			// Crée un modèle vide
 			Model model = ModelFactory.createDefaultModel();
 			
-			// Crée la resource
-			Resource resource = model.createResource(resourceModel);
+			if (tripletProp == null) {
+				// On a un résultat contenant qu'une ressource
+				// Crée la resource
+				Resource resource = model.createResource(tripletResult).addProperty(VCARD.FN, tripletResult);
+			}
+			else {
+				// Crée la resource
+				Resource resource = model.createResource(tripletResource).addProperty(VCARD.LABEL, tripletResult);
+			}
 			
 			model.write(System.out);
 		}

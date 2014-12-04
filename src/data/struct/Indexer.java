@@ -116,7 +116,14 @@ public class Indexer {
 		    	
 		      int docId = hits[i].doc;
 		      Document d = searcher.doc(docId);
-		      resultat.add(new Triplet(d.get("literale")));
+//		      resultat.add(new Triplet(d.get("literale")));
+		      
+		      Triplet triplet = new Triplet();
+		      triplet.setObjet(d.get("literale"));
+		      triplet.setPropriete(d.get("propriete"));
+		      triplet.setRessource(d.get("ressource"));
+		      resultat.add(triplet);
+		      
 		      System.out.println((i + 1) + ". " + d.get("propriete") + "\t" + d.get("literale"));
 		    }
 		    
