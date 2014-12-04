@@ -365,7 +365,7 @@ public class Main extends JFrame implements ComponentListener {
 		        jenaAdapter.printShortPath(list);
 		        
 		        // SPARQL
-		        Sparqlquery.createModel(list);
+		        Sparqlquery.basicStuff(list);
 		    }
 		};
 		bRecherche.addActionListener(monActionListener);
