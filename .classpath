@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JenaLibs"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/Java SE 7 Developer Preview"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jenaLibs"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/Java SE 7 Developer Preview [1.7.0-ea-b228]"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/graphstream"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/gs-algo"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Jena"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/lucene"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
