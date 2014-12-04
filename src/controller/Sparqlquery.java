@@ -44,7 +44,32 @@ public class Sparqlquery {
 			// Crée la resource
 			Resource resource = model.createResource(resourceModel);
 			
-			model.write(System.out);
+			//on va faire appel au methode de classe de LinkedMovieSparql
+			
+			LinkedMovieSparql sql = new LinkedMovieSparql(model);
+			
+			ArrayList<String> liste = new ArrayList<String>();
+			
+			// on essai avec Charles   
+			// ensuite avec charles gray
+			// on recupere les actor dont les noms correspondent ˆ 
+			ResultSet rs = sql.getActorMovies("Charles Gray");
+			String temp;
+			String temp2;
+		
+			while(rs.hasNext()){
+				temp =  rs.next().toString();
+				temp2 = temp.substring(temp.indexOf("\"")+1,temp.lastIndexOf("\""));
+				liste.add(temp2);
+			}
+			for(int j = 0; j<liste.size();j++){
+				System.out.println("les films dans lesquels a joue Charles gray"+" : "+liste.get(j));
+			}
+					
+			
+
+			
+			//model.write(System.out);
 		}
 	}
 	
@@ -68,7 +93,7 @@ public class Sparqlquery {
 		ResultSet results = qe.execSelect();
 
 		// Output query results	
-		ResultSetFormatter.out(System.out, results, query);
+		//ResultSetFormatter.out(System.out, results, query);
 
 		// Important - free up resources used running the query
 		qe.close();
