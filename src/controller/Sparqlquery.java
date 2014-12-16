@@ -28,12 +28,23 @@ import data.struct.Triplet;
 public class Sparqlquery {
 	public static String searchTerms; 													// contiendra les termes de la recherche
 	public static ArrayList<Model>models = new ArrayList<Model>(); // contiendra les modèles du sous-graphe
+	public static ArrayList<String> arrayTerms = new ArrayList<String>();
 	
 	
 	// Méthode principale
 	public static void basicStuff(List<Triplet> list) {
 		createModel(list);
+		getAllTerms();
 		generateQuery();
+	}
+	
+	public static void getAllTerms(){
+		String[] terms = searchTerms.split("\\s");
+		
+		for (int i = 0; i < terms.length; i++) {
+			arrayTerms.add(terms[i]);
+			System.out.println(arrayTerms.get(i));
+		}
 	}
 	
 	// Génère une requête SPARQL
@@ -49,7 +60,18 @@ public class Sparqlquery {
 			"WHERE {" +
 			"      ?resource vcard:LABEL ?whatever . " +
 			"      ?resource vcard:N ?director . " +
+			"      FILTER regex(?whatever, \"" + searchTerms +"\", \"i\") . " +
 			"      }";
+		
+//		String select = "SELECT";
+//		String whereBegin = "WHERE {";
+//		String wehreEnd = "";
+		
+		// Union
+//		for (int i = 0; i < arrayTerms.size(); i++) {
+//			select += " ?" + arrayTerms.get(i);
+//			queryString += "UNION { [] vcard:FN ? }";
+//		}
 		
 		Query query = QueryFactory.create(queryString);
 

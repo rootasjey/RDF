@@ -56,6 +56,7 @@ public class Main extends JFrame implements ComponentListener {
 	private JPanel panelNord2=null;
 	private JPanel panelCentre=null;
 	private JPanel panelWest=null;
+	private JPanel panelEst = null;
 	private JTextField  recherche=null;
 	private JButton  bRecherche=null;
 	private JFrame fen=null;
@@ -216,6 +217,7 @@ public class Main extends JFrame implements ComponentListener {
 			panelPrincipal=new JPanel(new BorderLayout());
 			panelPrincipal.add(getNordPanel(),BorderLayout.NORTH);
 			panelPrincipal.add(getWestPanel(),BorderLayout.WEST);
+			panelPrincipal.add(getEstPanel(), BorderLayout.EAST);
 			panelPrincipal.add(getcentrePanel(),BorderLayout.CENTER);
 		//	panelPrincipal.setBackground(Color.WHITE);
 		}
@@ -287,19 +289,25 @@ public class Main extends JFrame implements ComponentListener {
 		
 		if(panelWest==null){
 			panelWest=new JPanel();
-			
-			  Dimension tailleEcran = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-			   int hauteur = (int)(tailleEcran.getHeight()*0.9*0.7);
-			   int largeur = (int)(tailleEcran.getWidth()*0.8*0.4);
+			Dimension tailleEcran = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+			int hauteur = (int)(tailleEcran.getHeight()*0.9*0.7);
+			int largeur = (int)(tailleEcran.getWidth()*0.8*0.4);
 			panelWest.setPreferredSize(new Dimension(largeur, hauteur));
-			
-	
-			
-			
 		}
 		return panelWest;
 	}
 	
+	private JPanel getEstPanel(){
+		
+		if(panelEst==null){
+			panelEst=new JPanel();
+			Dimension tailleEcran = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+			int hauteur = (int)(tailleEcran.getHeight()*0.9*0.7);
+			int largeur = (int)(tailleEcran.getWidth()*0.8*0.4);
+			panelEst.setPreferredSize(new Dimension(largeur, hauteur));
+		}
+		return panelEst;
+	}
 	
 	
 	private JPanel getcentrePanel(){
@@ -365,7 +373,9 @@ public class Main extends JFrame implements ComponentListener {
 		        jenaAdapter.printShortPath(list);
 		        
 		        // SPARQL
+		        Sparqlquery.searchTerms = text;
 		        Sparqlquery.basicStuff(list);
+		        
 		    }
 		};
 		bRecherche.addActionListener(monActionListener);
@@ -395,6 +405,7 @@ public class Main extends JFrame implements ComponentListener {
            int hauteur=(int)(fen.getHeight()*0.7);
            int largeur2=(int) (fen.getWidth()*0.4);
 		   getWestPanel().setPreferredSize(new Dimension(largeur2, hauteur));
+		   getEstPanel().setPreferredSize(new Dimension(largeur2, hauteur));
 		   getcentrePanel().setPreferredSize(new Dimension(largeur, hauteur));
 		   
 		   if(view!=null)
