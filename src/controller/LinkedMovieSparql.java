@@ -16,13 +16,13 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 public class LinkedMovieSparql {
 	
+	private static final QueryExecution qe = null;
 	private ArrayList<String> MovieActors;
 	private Model model;
 	private StmtIterator si;
 	private Statement st;
 	private Resource Film;
 	private ResIterator act;
-	private String Service = "http://data.linkedmdb.org/sparql";
 	private String query;
 	private ResultSet Results;
 	
@@ -100,14 +100,8 @@ public class LinkedMovieSparql {
 	}
 
 
-	public String getService() {
-		return Service;
-	}
 
 
-	public void setService(String service) {
-		Service = service;
-	}
 
 
 	public String getQuery() {
@@ -152,9 +146,11 @@ public class LinkedMovieSparql {
 	"	    }  "+
 	"	  ORDER BY DESC(?date)  " ;
 	
-		  
+		
+		
 		Query q = QueryFactory.create(query);
-		QueryExecution qe = QueryExecutionFactory.sparqlService("http://dbpedia.org/sparql", query);
+		
+
 		ResultSet rs = qe.execSelect();
 		Results = rs;
 		return rs;
@@ -180,8 +176,7 @@ public class LinkedMovieSparql {
 		         "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " + 
 		         "PREFIX foaf: <http://xmlns.com/foaf/0.1/>"+
 				"SELECT ?name "+
-				"WHERE{"+
-				"SERVICE <http://data.linkedmdb.org/sparql> { "+
+				"WHERE{"+  "{ "+
 				 "          <"+MovieURI+"> dcterms:title ?movie . " + 
 				 "          <"+MovieURI+"> imdb:actor ?actor . " + 
 				 "          ?actor imdb:actor_name ?name . " + 
@@ -189,6 +184,7 @@ public class LinkedMovieSparql {
 				"}";
 		
 		Query q = QueryFactory.create(query);
+		
 		QueryExecution qe = QueryExecutionFactory.create(query, model);
 		
 		ResultSet rs = qe.execSelect();
@@ -206,20 +202,19 @@ public class LinkedMovieSparql {
 				 "SELECT ?actor_name ?birth_date"+
 				 " FROM <http://xmlns.com/foaf/0.1/>"+
 				 "WHERE {"+
-				 "SERVICE <http://data.linkedmdb.org/sparql> {"+
+		
 				 "   <"+MovieURI+"> movie:actor ?actor ."+
 				  "  ?actor movie:actor_name ?actor_name"+
 				 " }"+
-				  "SERVICE <http://dbpedia.org/sparql> {"+
+				  
 				  "  OPTIONAL{?actor2 a dbpedia:Actor ; foaf:name ?actor_name_en ; dbpedia:birthDate ?birth_date }"+
 				   " FILTER(STR(?actor_name_en) = ?actor_name)"+
 				  "}"+
 				"}";
 		
 		Query q = QueryFactory.create(query);
-		QueryExecution qe = QueryExecutionFactory.sparqlService("http://sparql.org/sparql", query);
 		
-		ResultSet rs = qe.execSelect();
+	ResultSet rs = ((QueryExecution) q).execSelect();
 		Results = rs;
 	
 		
@@ -241,7 +236,7 @@ public class LinkedMovieSparql {
 		 		"PREFIX dcterms: <http://purl.org/dc/terms/> " + 
 				"SELECT ?movieTitle "+
 				"WHERE{"+
-				"SERVICE <http://data.linkedmdb.org/sparql> { "+
+				
 				 "          ?actor1 imdb:actor_name \""+Actor+"\" . " + 
 			        "          ?movie imdb:actor ?actor1 ; " +
 			        "                 dcterms:title ?movieTitle . " + 

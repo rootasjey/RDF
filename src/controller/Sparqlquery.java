@@ -53,10 +53,11 @@ public class Sparqlquery {
 			// on essai avec Charles   
 			// ensuite avec charles gray
 			// on recupere les actor dont les noms correspondent ˆ 
+			
+			// pour le moment utilisat
 			ResultSet rs = sql.getActorMovies("Charles Gray");
 			String temp;
 			String temp2;
-		
 			while(rs.hasNext()){
 				temp =  rs.next().toString();
 				temp2 = temp.substring(temp.indexOf("\"")+1,temp.lastIndexOf("\""));
