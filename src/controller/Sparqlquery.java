@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.omg.CORBA.SystemException;
+
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
@@ -30,11 +32,13 @@ public class Sparqlquery {
 	public static ArrayList<Model>models = new ArrayList<Model>(); // contiendra les modèles du sous-graphe
 	public static ArrayList<String> arrayTerms = new ArrayList<String>();
 	
+	static String[] keywords = {"country", "name", "length", "releaseDate"};
 	
 	// Méthode principale
 	public static void basicStuff(List<Triplet> list) {
 		createModel(list);
 		getAllTerms();
+		buildQuery();
 		generateQuery();
 	}
 	
@@ -45,6 +49,40 @@ public class Sparqlquery {
 			arrayTerms.add(terms[i]);
 			System.out.println(arrayTerms.get(i));
 		}
+	}
+	
+	public static void buildQuery() {
+		String initialQuery = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> " +
+				"PREFIX vcard: <http://www.w3.org/2001/vcard-rdf/3.0#> " +
+				"PREFIX foaf: <http://xmlns.com/foaf/0.1/> " +
+				"PREFIX movie: <http://www.example.org/Movie/> " +
+				"PREFIX dbpedia: <http://es.dbpedia.org/page/> " +
+				"SELECT ?whatever ?director " +
+				"WHERE {" +
+				"      ?resource foaf:name ?whatever . " +
+				"      ?resource vcard:N ?director . " +
+				"      FILTER regex(?whatever, \"" + arrayTerms.get(0) +"\", \"i\") . " +
+				"      }";
+		
+		String where = "";
+		String additionnalQuery = null;
+		ArrayList<String> localKeywords = null;
+		
+		for (int i = 0; i < arrayTerms.size(); i++) {
+			String term = arrayTerms.get(i);
+			
+			for (int j = 0; j < keywords.length; j++) {
+				if (term.contains(keywords[j])) {
+					System.out.println("toto");
+					localKeywords.add(arrayTerms.get(i));
+					where += "      ?resource foaf:name . ";
+					where += arrayTerms.get(i+1);
+					
+				}
+			}
+		}
+		
+		System.out.println("where : " + where);
 	}
 	
 	// Génère une requête SPARQL
@@ -97,12 +135,12 @@ public class Sparqlquery {
 		for (int i = 0; i < list.size(); i++) {
 			Triplet triplet = list.get(i);
 			String tripletResult = triplet.getObjet();
-			String tripletProp = triplet.getObjet();
+			String tripletProp = triplet.getPropriete();
 			String tripletResource = triplet.getRessource();
 			
-			// System.out.println("object : " + tripletResult);
-			// System.out.println("prop : " + tripletProp);
-			// System.out.println("ress : " + tripletResource);
+//			 System.out.println("object : " + tripletResult);
+//			 System.out.println("prop : " + tripletProp);
+//			 System.out.println("ress : " + tripletResource);
 			
 			// Crée un modèle vide
 			Model model = ModelFactory.createDefaultModel();

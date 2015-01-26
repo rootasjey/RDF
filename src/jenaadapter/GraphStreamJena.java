@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.lucene.queries.function.valuesource.IfFunction;
 import org.graphstream.algorithm.Dijkstra;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
@@ -120,8 +121,12 @@ public class GraphStreamJena {
 		for(Triplet triple: resultat){
 			
 			current=graph.getNode(triple.getObjet());
-			current.addAttribute("ui.class", "important");
-			//current.addAttribute("ui.style", "fill-color: rgb(200,167,153);");
+			
+			if (current != null) {
+				current.addAttribute("ui.class", "important");
+				//current.addAttribute("ui.style", "fill-color: rgb(200,167,153);");
+			}
+			
 		}
 		
 	}
@@ -135,6 +140,10 @@ public class GraphStreamJena {
 		dijkstra.compute();
 		for(int i=1;i<list.size();i++){
 			Iterator<Edge> ite = graph.getEdgeIterator();
+			
+//				if (list.get(i) == null) {
+//					System.out.println("TTOOOTOT");
+//				}
 		       ite= (Iterator<Edge>) dijkstra.getPathEdgesIterator(graph.getNode(list.get(i).getObjet()));
 		       while(ite.hasNext())
 		       {

@@ -69,7 +69,7 @@ public class AddSource extends JDialog {
 			mainPane = new JPanel(new BorderLayout());
 			mainPane.add(getNorth(), BorderLayout.NORTH);
 			mainPane.add(getJScrollPane(), BorderLayout.CENTER);
-			mainPane.add(getWest(), BorderLayout.WEST);
+//			mainPane.add(getWest(), BorderLayout.WEST);
 		}
 		return mainPane;
 	}
